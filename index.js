@@ -1,17 +1,17 @@
-const http = require('http')
-const url = require('url')
-const fs = require('fs')
+import { createServer } from 'http'
+import { parse } from 'url'
+import { readFile } from 'fs'
 
 let notFoundPage
-fs.readFile('./404.html', (e, data) => {
+readFile('./404.html', (e, data) => {
   if (e) return console.error('error page not found')
   notFoundPage = data
 })
 
-http.createServer((req, res) => {
-  const { pathname } = url.parse(req.url, true)
+createServer((req, res) => {
+  const { pathname } = parse(req.url, true)
   const pagePath = pathname.length > 1 ? `.${pathname}.html` : './index.html'
-  fs.readFile(pagePath, (e, data) => {
+  readFile(pagePath, (e, data) => {
     if (e) {
       res.writeHead(418, { 'Content-Type': 'text/html' });
       res.write(notFoundPage)
